@@ -5,7 +5,7 @@
  *      Author: gijs
  */
 
-#include "spi.h"
+#include <spi.h>
 #include <sys/ioctl.h>
 #include <linux/spi/spidev.h>
 

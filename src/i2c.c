@@ -5,8 +5,8 @@
  *      Author: gijs
  */
 
-#include "core.h"
-#include "i2c.h"
+#include <core.h>
+#include <i2c.h>
 
 int res, daddress;
 

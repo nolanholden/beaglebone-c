@@ -5,7 +5,7 @@
  *      Author: gijs
  */
 
-#include "uart.h"
+#include <uart.h>
 
 
 int uart_open(uart_properties *uart) {

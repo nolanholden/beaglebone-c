@@ -5,8 +5,8 @@
  *      Author: gijs
  */
 
-#include "core.h"
-#include "gpio.h"
+#include <core.h>
+#include <gpio.h>
 
 int gpio_open(gpio_properties *gpio) {
 	syslog (LOG_INFO, "gpio_open: export gpio: %d", gpio->nr);
