@@ -46,25 +46,24 @@ uint8_t spi_close(spi_properties *spi) {
     return 0;
 }
 
-uint8_t spi_send(spi_properties *spi, unsigned char tx[], int length) {
+uint8_t spi_send(spi_properties *spi, unsigned char tx[], size_t length) {
 	unsigned char rx[length];
 	return spi_transfer(spi, tx, rx, length);
 }
 
 uint8_t spi_transfer(spi_properties *spi, unsigned char tx[], unsigned char rx[], int length) {
-	struct spi_ioc_transfer transfer = {
-		   .tx_buf = (unsigned long)tx,
-		   .rx_buf = (unsigned long)rx,
-		   .len = length,
-		   .delay_usecs = 0,
-		   .speed_hz = spi->speed,
-		   .bits_per_word = spi->bits_per_word,
-   };
-   // send the SPI message (all of the above fields, inc. buffers)
-   int status = ioctl(spi->fd, SPI_IOC_MESSAGE(1), &transfer);
-   if (status < 0) {
-      perror("SPI: SPI_IOC_MESSAGE Failed");
-      return -1;
-   }
-   return 0; //status;
+  struct spi_ioc_transfer transfer{};
+  transfer.tx_buf = (unsigned long)tx;
+  transfer.rx_buf = (unsigned long)rx;
+  transfer.len = length;
+  transfer.delay_usecs = 0;
+  transfer.speed_hz = spi->speed;
+  transfer.bits_per_word = spi->bits_per_word;
+  // send the SPI message (all of the above fields, inc. buffers)
+  int status = ioctl(spi->fd, SPI_IOC_MESSAGE(1), &transfer);
+  if (status < 0) {
+    perror("SPI: SPI_IOC_MESSAGE Failed");
+    return -1;
+  }
+  return 0; //status;
 }

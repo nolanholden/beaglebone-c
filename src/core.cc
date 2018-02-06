@@ -7,14 +7,12 @@
 
 #include <bbc/core.h>
 
-char* slotsFilePath;
+const char* slotsFilePath;
 #define MAX_LENGTH 1048576
 
 char *substring(char *string, int position, int length) {
-	char *pointer;
+	char *pointer = static_cast<decltype(pointer)>(malloc(length + 1));
 	int c;
-
-	pointer = malloc(length + 1);
 
 	if (pointer == NULL) {
 		printf("Unable to allocate memory.\n");
@@ -63,9 +61,9 @@ int copyFile(char *srcFile, char *destinationFile) {
 
 char* getTokenValue(char* token) {
 	if (token == NULL)
-		return "";
+		return NULL;
 	if (strcmp(token, "(null)") == 0 && strcmp(token, "\n") == 0)
-		return "";
+		return NULL;
 	return token;
 }
 
@@ -97,7 +95,7 @@ int get_device_tree_overlays(overlay** overlays) {
 	char buf[1024];
 	while (fgets(buf, sizeof buf, fh) != NULL) {
 		char *id, *metadata, *token;
-		overlay *ol = malloc(sizeof(overlay));
+		overlay *ol = static_cast<decltype(ol)>(malloc(sizeof(overlay)));
 		id = substring(buf, 1, 2);
 		ol->id = atoi(id);
 		metadata = substring(buf, 14, strlen(buf));
@@ -114,7 +112,7 @@ int get_device_tree_overlays(overlay** overlays) {
 			partNr[len-1] = '\0';
 			ol->part_number = partNr;
 		} else {
-			ol->part_number = "";
+			ol->part_number = NULL;
 		}
 		overlays[nrOfOverlays++] = ol;
 	}
@@ -141,7 +139,7 @@ int device_tree_overlay_equal(overlay* ol1, overlay* ol2) {
 int is_device_tree_overlay_loaded(overlay* ol) {
 	syslog(LOG_INFO, "Is device tree overlay loaded: %s", ol->file_name);
 	int len = get_device_tree_overlay_count();
-	overlay** overlays = malloc(len * sizeof(overlay));
+	overlay** overlays = static_cast<decltype(overlays)>(malloc(len * sizeof(overlay)));
 	get_device_tree_overlays(overlays);
 	int i = 0;
 
@@ -170,10 +168,12 @@ int load_device_tree_overlay(overlay* ol) {
 		   strcat(cmd, ol->file_name);
 		   strcat(cmd, " > ");
 		   strcat(cmd, slotsFilePath);
+			 char bash[] = "/bin/bash";
+			 char tac_c[] = "-c";
 		   char *name[] = {
-		        "/bin/bash",
-		        "-c",
-				cmd,
+		        bash,
+		        tac_c,
+						cmd,
 		        NULL
 		    };
 		   chdir("/lib/firmware/");
@@ -199,12 +199,14 @@ int unload_device_tree_overlay(int slot_nr) {
 	   strcat(cmd, nr);
 	   strcat(cmd, " > ");
 	   strcat(cmd, slotsFilePath);
-	   char *name[] = {
-	        "/bin/bash",
-	        "-c",
-			cmd,
-	        NULL
-	    };
+			char bash[] = "/bin/bash";
+			char tac_c[] = "-c";
+			char *name[] = {
+					bash,
+					tac_c,
+					cmd,
+					NULL
+			};
 	   chdir("/lib/firmware/");
 	   execvp(name[0], name);
    }

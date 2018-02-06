@@ -10,16 +10,16 @@
 
 int gpio_open(gpio_properties *gpio) {
 	syslog (LOG_INFO, "gpio_open: export gpio: %d", gpio->nr);
-	FILE *export;
-	export = fopen(SYSFS_GPIO_DIR "/export", "w");
-	if (export < 0) {
+	FILE *export_file;
+	export_file = fopen(SYSFS_GPIO_DIR "/export", "w");
+	if (export_file < 0) {
 		perror("gpio/export");
 		return 1;
 	}
 	char str[15];
 	sprintf(str, "%d", gpio->nr);
-	fputs(str, export);
-	fclose(export);
+	fputs(str, export_file);
+	fclose(export_file);
 	syslog (LOG_INFO, "gpio_open: set direction: %d, %d", gpio->nr, gpio->direction);
 	FILE *fd;
 	char buf[MAX_BUF];
