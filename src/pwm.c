@@ -6,7 +6,7 @@
  */
 
 #include <unistd.h>
-#include <pwm.h>
+#include <bbc/pwm.h>
 
 int pwm_open(pwm_properties *pwm) {
 	char filename[60] = PWM_PATH;

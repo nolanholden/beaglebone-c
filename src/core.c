@@ -5,7 +5,7 @@
  *      Author: gijs
  */
 
-#include <core.h>
+#include <bbc/core.h>
 
 char* slotsFilePath;
 #define MAX_LENGTH 1048576
